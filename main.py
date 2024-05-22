@@ -4,29 +4,31 @@ from leaderboard import Leaderboard
 from blackjack import Blackjack
 from game_2048 import Game2048
 from flappy_bird import FlappyBird
-from snake import Snake
-from jogo import OtherGame
 
 class MiniGamesApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Mini Games")
-        self.geometry("400x300")
+        self.geometry("500x520")
+        style_button = ttk.Style()
+        style_button.configure('Custom.TButton', font=('Trebuchet MS', 18), padding=(80, 13))
+        
+        style_button_2 = ttk.Style()
+        style_button_2.configure('Specific.TButton', font=('Trebuchet MS', 18), padding=(80, 13))  
+        
         
         self.leaderboard = Leaderboard()
         
-        ttk.Label(self, text="Selecione um Mini-Jogo:", font=("Helvetica", 16)).pack(pady=20)
+        ttk.Label(self, text="Selecione um dos jogos:", font=("Trebuchet MS", 30)).pack(pady=20)
         
         self.buttons_frame = ttk.Frame(self)
         self.buttons_frame.pack(pady=10)
 
-        ttk.Button(self.buttons_frame, text="Blackjack", command=self.start_blackjack).pack(pady=5)
-        ttk.Button(self.buttons_frame, text="2048", command=self.start_2048).pack(pady=5)
-        ttk.Button(self.buttons_frame, text="Flappy Bird", command=self.start_flappy_bird).pack(pady=5)
-        ttk.Button(self.buttons_frame, text="Snake", command=self.start_snake).pack(pady=5)
-        ttk.Button(self.buttons_frame, text="Outro Jogo", command=self.start_other_game).pack(pady=5)
+        ttk.Button(self.buttons_frame, text="Blackjack", style="Custom.TButton", command=self.start_blackjack).pack(pady=10)
+        ttk.Button(self.buttons_frame, text="2048", style="Custom.TButton", command=self.start_2048).pack(pady=10)
+        ttk.Button(self.buttons_frame, text="Flappy Bird", style="Custom.TButton", command=self.start_flappy_bird).pack(pady=10)
         
-        ttk.Button(self, text="Ver Tabela de Liderança", command=self.show_leaderboard).pack(pady=20)
+        ttk.Button(self, text="Ver Tabela de Liderança", style="Custom.TButton", command=self.show_leaderboard).pack(pady=40)
 
     def start_blackjack(self):
         Blackjack(self.leaderboard)
@@ -35,13 +37,7 @@ class MiniGamesApp(tk.Tk):
         Game2048(self.leaderboard)
 
     def start_flappy_bird(self):
-        FlappyBird(self.leaderboard)
-
-    def start_snake(self):
-        Snake(self.leaderboard)
-
-    def start_other_game(self):
-        OtherGame(self.leaderboard)
+        FlappyBird(self.leaderboard).main()
 
     def show_leaderboard(self):
         self.leaderboard.show()

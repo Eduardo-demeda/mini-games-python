@@ -3,7 +3,7 @@ from tkinter import ttk
 
 class Leaderboard:
     def __init__(self):
-        self.scores = {"Blackjack": [], "2048": [], "Flappy Bird": [], "Snake": [], "Outro Jogo": []}
+        self.scores = {"Blackjack": [], "2048": [], "Flappy Bird": [],}
 
     def add_score(self, game, player, score):
         self.scores[game].append((player, score))
@@ -20,7 +20,7 @@ class Leaderboard:
         for game, scores in self.scores.items():
             frame = ttk.Frame(notebook)
             notebook.add(frame, text=game)
-            ttk.Label(frame, text=f"Tabela de Liderança - {game}", font=("Helvetica", 14)).pack(pady=10)
+            ttk.Label(frame, text=f"Tabela de Liderança - {game}", font=("Trebuchet MS", 14)).pack(pady=10)
 
             tree = ttk.Treeview(frame, columns=("Jogador", "Pontuação"), show="headings")
             tree.heading("Jogador", text="Jogador")
