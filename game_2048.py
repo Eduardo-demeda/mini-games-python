@@ -2,19 +2,6 @@ import tkinter as tk
 from tkinter import simpledialog
 import random
 
-class Leaderboard:
-    def __init__(self):
-        self.scores = []
-
-    def add_score(self, game, player_name, score):
-        self.scores.append((game, player_name, score))
-        self.scores.sort(key=lambda x: x[2], reverse=True)
-        self.show_leaderboard()
-
-    def show_leaderboard(self):
-        for score in self.scores:
-            print(f"{score[0]} - {score[1]}: {score[2]}")
-
 class Game2048:
     def __init__(self, leaderboard):
         self.leaderboard = leaderboard
@@ -26,6 +13,21 @@ class Game2048:
         self.grid = [[0] * 4 for _ in range(4)]
         self.score = 0
 
+        self.color_map = {
+            0: "white",
+            2: "#ADD8E6",   
+            4: "#D8BFD8",   
+            8: "#FFB6C1",   
+            16: "#FF6347",  
+            32: "#FFD700",  
+            64: "#FFA07A",  
+            128: "#7FFF00", 
+            256: "#00FA9A", 
+            512: "#48D1CC", 
+            1024: "#1E90FF",
+            2048: "#8A2BE2" 
+        }
+
         self.create_widgets()
         self.start_game()
 
@@ -33,10 +35,14 @@ class Game2048:
         self.canvas = tk.Canvas(self.window, bg="white", width=400, height=400)
         self.canvas.pack(pady=20)
         
-        self.score_label = tk.Label(self.window, text="Pontuação: 0", font=("Trebuchet MS", 16))
-        self.quit_button = tk.Button(self.window, text="Encerrar Jogo",font=("Trebuchet MS", 16), command=self.quit_game)
-        self.quit_button.pack(pady=10)
-        self.score_label.pack()
+        self.controls_frame = tk.Frame(self.window)
+        self.controls_frame.pack(pady=10)
+
+        self.score_label = tk.Label(self.controls_frame, text="Pontuação: 0", font=("Trebuchet MS", 16))
+        self.score_label.grid(row=0, column=0, padx=5)
+
+        self.quit_button = tk.Button(self.controls_frame, text="Encerrar Jogo", font=("Trebuchet MS", 16), command=self.quit_game)
+        self.quit_button.grid(row=0, column=1, padx=5)
 
         self.window.bind("<KeyPress>", self.on_key_press)
 
@@ -56,23 +62,22 @@ class Game2048:
         for r in range(4):
             for c in range(4):
                 value = self.grid[r][c]
+                color = self.color_map.get(value, "black")
+                self.canvas.create_rectangle(c * 100, r * 100, (c + 1) * 100, (r + 1) * 100, fill=color, outline="lightgray")
                 if value:
-                    self.canvas.create_rectangle(c * 100, r * 100, (c + 1) * 100, (r + 1) * 100, fill="lightgray")
                     self.canvas.create_text(c * 100 + 50, r * 100 + 50, text=str(value), font=("Trebuchet MS", 24))
-                else:
-                    self.canvas.create_rectangle(c * 100, r * 100, (c + 1) * 100, (r + 1) * 100, fill="white", outline="lightgray")
-        self.score_label.config(text=f"Score: {self.score}")
+        self.score_label.config(text=f"Pontuação: {self.score}")
         if self.game_over_flag:
-            self.canvas.create_text(200, 200, text="Game Over", fill="red", font=("Trebuchet MS", 36))
+            self.canvas.create_text(200, 200, text="Game Over", fill="red", font=("Trebuchet MS", 36, "bold"))
 
     def on_key_press(self, event):
         if not self.game_over_flag:
             if event.keysym in ["Up", "Down", "Left", "Right"]:
-                self.move(event.keysym)
-                self.add_random_tile()
-                self.update_grid()
-                if self.check_game_over():
-                    self.game_over()
+                if self.move(event.keysym):
+                    self.add_random_tile()
+                    self.update_grid()
+                    if self.check_game_over():
+                        self.game_over()
 
     def move(self, direction):
         moved = False
@@ -138,9 +143,7 @@ class Game2048:
     def game_over(self):
         self.game_over_flag = True
         self.update_grid()
-        player_name = simpledialog.askstring("Nome do Jogador", "Digite seu nome:")
-        if player_name:
-            self.leaderboard.add_score("2048", player_name, self.score)
+        self.prompt_player_name()
     
     def quit_game(self):
         self.game_over_flag = True
@@ -149,6 +152,7 @@ class Game2048:
     def prompt_player_name(self):
         player_name = simpledialog.askstring("Nome do Jogador", "Digite seu nome:")
         if player_name:
+            player_name = player_name.upper()
             self.leaderboard.add_score("2048", player_name, self.score)
         self.window.destroy()
 
