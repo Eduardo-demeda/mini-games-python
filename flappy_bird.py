@@ -59,7 +59,7 @@ class FlappyBird:
                     self.canvas.itemconfig(self.score_display, text=f"Pontuação: {self.score}")
                     pipe[2] = True
                     if self.score >= 3:
-                        self.pipe_speed += 0.3
+                        self.pipe_speed += 0.4
 
     def bird_collision(self):
         bird_coords = self.canvas.coords(self.bird)
